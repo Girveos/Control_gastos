@@ -2,19 +2,20 @@ from datetime import datetime
 from src.database import db , ma
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from src.models.product import Product
-from src.models.house import House
+from src.models.discharge import Discharge
+from src.models.charge import Charge
 
 class User(db.Model):
     id                      = db.Column(db.String(10), primary_key=True)
     name                    = db.Column(db.String(80), nullable = False)
     email                   = db.Column(db.String(60), unique = True, nullable = False)
     password                = db.Column(db.String(128), nullable=False)
+    balance                 = db.Column(db.Float)
     create_at               = db.Column(db.DateTime, default = datetime.now())
     update_at               = db.Column(db.DateTime, onupdate = datetime.now())
 
-    products = db.relationship('Product', backref="owner")    
-    houses = db.relationship('House', backref="owner")    
+    charges = db.relationship('Charge', backref="owner")    
+    discharges = db.relationship('Discharge', backref="owner")    
     
     def __init__(self, **fields):
         super().__init__(**fields)
