@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request
 from flask_jwt_extended import create_access_token, jwt_required, current_user
 from http import HTTPStatus
 from src.models.user import User, user_schema, users_schema

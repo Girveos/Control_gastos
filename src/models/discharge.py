@@ -18,7 +18,6 @@ class Discharge (db.Model):
     
 class DischargeSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
-        # fields = ()
         model = Discharge
         include_fk = True
         

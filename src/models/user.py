@@ -13,12 +13,16 @@ class User(db.Model):
     balance                 = db.Column(db.Float)
     create_at               = db.Column(db.DateTime, default = datetime.now())
     update_at               = db.Column(db.DateTime, onupdate = datetime.now())
+    charges                 = db.relationship('Charge', backref='user', lazy=True)
+    discharges              = db.relationship('Discharge', backref='user', lazy=True)
 
     charges = db.relationship('Charge', backref="owner")    
     discharges = db.relationship('Discharge', backref="owner")    
     
     def __init__(self, **fields):
         super().__init__(**fields)
+        self.discharges = []
+        self.charges = []
         
     def __repr__(self) -> str:
         return f"User >>> {self.name}"
@@ -35,6 +39,11 @@ class User(db.Model):
     
     def check_password(self, password):
         return check_password_hash(self.password, password)
+    
+    def get_balance(self):
+        total_charges = sum(charge.value for charge in self.charges)
+        total_discharges = sum(discharge.value for discharge in self.discharges)
+        return total_charges - total_discharges
     
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
