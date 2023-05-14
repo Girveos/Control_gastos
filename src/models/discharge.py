@@ -4,7 +4,7 @@ from src.database import db , ma
 class Discharge (db.Model):
     id          = db.Column(db.Integer, primary_key=True, autoincrement=True)
     value       = db.Column(db.Float, nullable = False)
-    date        = db.Column(db.Date, nullable=True)
+    date        = db.Column(db.DateTime, nullable=True)
     description = db.Column(db.String(80), nullable=True)
     create_at   = db.Column(db.DateTime, default = datetime.now())
     update_at   = db.Column(db.DateTime, onupdate = datetime.now())
@@ -18,7 +18,6 @@ class Discharge (db.Model):
     
 class DischargeSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
-        # fields = ()
         model = Discharge
         include_fk = True
         

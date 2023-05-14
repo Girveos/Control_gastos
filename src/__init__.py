@@ -4,6 +4,8 @@ from src.database import db, ma, migrate, jwt
 
 from src.endpoints.users import users
 from src.endpoints.auth import auth
+from src.endpoints.discharge import discharges
+from src.endpoints.charge import charges
 
 def create_app(test_config=None):
     app = Flask(__name__,
@@ -24,6 +26,8 @@ def create_app(test_config=None):
     
     app.register_blueprint(users)
     app.register_blueprint(auth)
+    app.register_blueprint(discharges)
+    app.register_blueprint(charges)
 
     migrate.init_app(app,db)
     
