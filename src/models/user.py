@@ -1,5 +1,7 @@
 from datetime import datetime
+import re
 from flask import jsonify
+from sqlalchemy.orm import validates
 from src.database import db , ma
 from sqlalchemy import and_
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -32,6 +34,25 @@ class User(db.Model):
             
         super(User, self).__setattr__(name, value)
         
+    
+    @validates('code')
+    def validate_code(self, key, value):
+        if not value:
+            raise AssertionError('No code provided')
+        if User.query.filter(User.id == value).first():
+            raise AssertionError('Id is already in use')
+        return value
+    
+    @validates('email')
+    def validate_email(self, key, value):
+        if not value:
+            raise AssertionError('No email provided')
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", value):
+            raise ValueError('The email format is invalid')
+        if User.query.filter(User.email == value).first():
+            raise AssertionError('email is already in use')
+        return value
+    
     @staticmethod
     def hash_password(password):
         return generate_password_hash(password)

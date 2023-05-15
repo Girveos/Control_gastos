@@ -1,4 +1,5 @@
 from datetime import datetime
+from sqlalchemy.orm import validates
 from src.database import db , ma
 
 class Charge (db.Model):
@@ -24,6 +25,26 @@ class Charge (db.Model):
             'date': self.date.strftime('%Y-%m-%d %H:%M:%S'),
             'user_id': self.user_id
         }
+    
+    @validates('date')
+    def validate_date(self, key, date):
+        if isinstance(date, datetime):
+            return date
+        try:
+            datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
+            return date
+        except ValueError:
+            raise ValueError('The time format is invalid. Use the format "year-month-day hour:minute:second".')
+    
+    @validates('value')
+    def validate_observations(self, key, value):
+        if not value:
+            raise AssertionError('No value provided')
+        if value < 0:
+            raise AssertionError('Value must be positive')
+        return value
+    
+    
     
 class ChargeSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
