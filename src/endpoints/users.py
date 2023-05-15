@@ -11,16 +11,6 @@ from src.models.discharge import Discharge, discharge_schema
 users = Blueprint("users", __name__, url_prefix="/api/v1/users")
 
 
-@users.get("/")
-def read_all():
-    users = User.query.order_by(User.name).all()
-    return {"data": users_schema.dump(users)}, HTTPStatus.OK
-
-
-@users.get("/demo")
-def read_all_query_string():
-    pass
-
 
 @users.post("/")
 def create():
