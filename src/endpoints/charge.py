@@ -8,11 +8,12 @@ from datetime import datetime
 
 
 from src.models.charge import Charge, charge_schema, charges_schema
+from src.models.user import User, user_schema, users_schema
 
 charges = Blueprint("charge", __name__, url_prefix="/api/v1/charges")
 
-@jwt_required()
 @charges.get("/user/<int:user_id>")
+@jwt_required()
 def read_one(user_id):
     charges = Charge.query.filter_by(user_id=user_id).all()
     if not charges:
@@ -34,7 +35,15 @@ def create():
                 description = request.get_json().get("description", None),
                 user_id = request.get_json().get("user_id", None),
     )
+    
+    user = User.query.filter_by(id=charge.user_id).first()
+    
+    if user.balance is None:
+        user.balance = charge.value
+    else:
+        user.balance += charge.value
 
+    
     # Agregar el nuevo charge a la base de datos
     db.session.add(charge)
     db.session.commit()
@@ -43,8 +52,9 @@ def create():
     return {'data': charge_schema.dump(charge)}, HTTPStatus.CREATED
 
 
-@jwt_required()
+
 @charges.put('/<int:id>')
+@jwt_required()
 def update_charges(id):
     post_data = None
     

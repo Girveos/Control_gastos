@@ -8,7 +8,7 @@ class Discharge (db.Model):
     description = db.Column(db.String(80), nullable=True)
     create_at   = db.Column(db.DateTime, default = datetime.now())
     update_at   = db.Column(db.DateTime, onupdate = datetime.now())
-    user_id     = db.Column(db.String(10), db.ForeignKey('user.id', onupdate="CASCADE", ondelete="RESTRICT"), nullable=False)
+    user_id     = db.Column(db.String(10), db.ForeignKey('user.id', onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
     
     def __init__(self, **fields):
         super().__init__(**fields)

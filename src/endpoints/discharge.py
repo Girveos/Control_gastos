@@ -8,11 +8,13 @@ from datetime import datetime
 
 
 from src.models.discharge import Discharge, discharge_schema, discharges_schema
+from src.models.user import User, user_schema, users_schema
 
 discharges = Blueprint("discharge", __name__, url_prefix="/api/v1/discharges")
 
-@jwt_required()
+
 @discharges.get("/user/<int:user_id>")
+@jwt_required()
 def read_one(user_id):
     discharges = Discharge.query.filter_by(user_id=user_id).all()
     if not discharges:
@@ -35,6 +37,12 @@ def create():
                 user_id = request.get_json().get("user_id", None),
     )
 
+    user = User.query.filter_by(id=discharge.user_id).first()
+    if user.balance is None:
+        user.balance = discharge.value
+    else:
+        user.balance -= discharge.value
+
     # Agregar el nuevo discharge a la base de datos
     db.session.add(discharge)
     db.session.commit()
@@ -43,8 +51,8 @@ def create():
     return {'data': discharge_schema.dump(discharge)}, HTTPStatus.CREATED
 
 
-@jwt_required()
 @discharges.put('/<int:id>')
+@jwt_required()
 def update_discharges(id):
     post_data = None
     

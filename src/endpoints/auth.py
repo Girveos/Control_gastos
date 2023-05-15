@@ -13,12 +13,12 @@ auth = Blueprint("auth",
 
 @auth.post("/login")
 def login():
-    username = request.json.get("username", None)
+    email = request.json.get("email", None)
     password = request.json.get("password", None)
 
-    user = User.query.filter_by(email=username).one_or_none()
+    user = User.query.filter_by(email=email).one_or_none()
     if not user or not user.check_password(password):
-        return {"error": "Wrong username or password"}, HTTPStatus.UNAUTHORIZED
+        return {"error": "Wrong email or password"}, HTTPStatus.UNAUTHORIZED
     
     access_token = create_access_token(identity=user_schema.dump(user))
 
@@ -47,8 +47,3 @@ def refresh_expiring_jwts(response):
     except (RuntimeError, KeyError):
         # Case where there is not a valid JWT. Just return the original response
         return response
-
-@jwt.user_lookup_loader
-def user_lookup_callback(_jwt_header, jwt_data):
-    identity = jwt_data["sub"]
-    return User.query.filter_by(id=identity).one_or_none()
