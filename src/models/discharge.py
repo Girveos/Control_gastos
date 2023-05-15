@@ -16,6 +16,15 @@ class Discharge (db.Model):
     def __repr__(self) -> str:
         return f"Discharge >>> {self.name}"
     
+    def as_dict(self):
+        return {
+            'id': self.id,
+            'value': self.value,
+            'description': self.description,
+            'date': self.date.strftime('%Y-%m-%d %H:%M:%S'),
+            'user_id': self.user_id
+        }
+    
 class DischargeSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Discharge
