@@ -35,10 +35,10 @@ class User(db.Model):
         super(User, self).__setattr__(name, value)
         
     
-    @validates('code')
-    def validate_code(self, key, value):
+    @validates('id')
+    def validate_id(self, key, value):
         if not value:
-            raise AssertionError('No code provided')
+            raise AssertionError('No id provided')
         if User.query.filter(User.id == value).first():
             raise AssertionError('Id is already in use')
         return value
