@@ -7,6 +7,7 @@ class Config:
     FLASK_APP = environ.get('FLASK_APP')
     ENVIRONMENT = environ.get('ENVIRONMENT')
     JWT_ACCESS_TOKEN_EXPIRES=timedelta(hours=int(environ.get('JWT_ACCESS_TOKEN_EXPIRES_HOURS')))
+    JWT_TOKEN_LOCATION=["headers", "cookies"]
 
 
 class DevelopmentConfig(Config):
@@ -15,6 +16,7 @@ class DevelopmentConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = environ.get('DEVELOPMENT_DATABASE_URI')
     JWT_SECRET_KEY = environ.get('DEVELOPMENT_JWT_SECRET_KEY')
+    JWT_COOKIE_SECURE=False
     
 class ProductionConfig(Config):
     """Production config"""
@@ -22,5 +24,6 @@ class ProductionConfig(Config):
     TESTING = False
     SQLALCHEMY_DATABASE_URI = environ.get('PRODUCTION_DATABASE_URI')
     JWT_SECRET_KEY = environ.get('PRODUCTION_JWT_SECRET_KEY')
+    JWT_COOKIE_SECURE=True
 
  

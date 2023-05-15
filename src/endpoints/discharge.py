@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 from http import HTTPStatus
+from flask_jwt_extended import jwt_required
 from src.database import db
 import werkzeug 
 import sqlalchemy.exc
@@ -10,6 +11,7 @@ from src.models.discharge import Discharge, discharge_schema, discharges_schema
 
 discharges = Blueprint("discharge", __name__, url_prefix="/api/v1/discharges")
 
+@jwt_required()
 @discharges.get("/user/<int:user_id>")
 def read_one(user_id):
     discharges = Discharge.query.filter_by(user_id=user_id).all()
@@ -41,7 +43,7 @@ def create():
     return {'data': discharge_schema.dump(discharge)}, HTTPStatus.CREATED
 
 
-
+@jwt_required()
 @discharges.put('/<int:id>')
 def update_discharges(id):
     post_data = None

@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 from http import HTTPStatus
+from flask_jwt_extended import jwt_required
 from src.database import db
 import werkzeug 
 import sqlalchemy.exc
@@ -10,6 +11,7 @@ from src.models.charge import Charge, charge_schema, charges_schema
 
 charges = Blueprint("charge", __name__, url_prefix="/api/v1/charges")
 
+@jwt_required()
 @charges.get("/user/<int:user_id>")
 def read_one(user_id):
     charges = Charge.query.filter_by(user_id=user_id).all()
@@ -41,7 +43,7 @@ def create():
     return {'data': charge_schema.dump(charge)}, HTTPStatus.CREATED
 
 
-
+@jwt_required()
 @charges.put('/<int:id>')
 def update_charges(id):
     post_data = None
@@ -87,4 +89,3 @@ def delete(id):
     
     return {"data":""}, HTTPStatus.NO_CONTENT
  
-

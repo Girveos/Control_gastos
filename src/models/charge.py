@@ -16,8 +16,18 @@ class Charge (db.Model):
     def __repr__(self) -> str:
         return f"Charge >>> {self.name}"
     
+    def as_dict(self):
+        return {
+            'id': self.id,
+            'value': self.value,
+            'description': self.description,
+            'date': self.date.strftime('%Y-%m-%d %H:%M:%S'),
+            'user_id': self.user_id
+        }
+    
 class ChargeSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
+        # fields = ()
         model = Charge
         include_fk = True
         
